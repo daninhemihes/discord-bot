@@ -1,17 +1,21 @@
-export default TicketModel = {
-    Id: number,
-    Title: string,
-    Description: string,
-    Type: string,
-    Group: string,
-    Place: string,
-    Priority: string,
-    Source: string,
-    Status: string,
-    ReporterId: string,
-    AgentId: string
-}
+//type: 1 - doubt ; 2 - problem ; 3 - request
+//priority: 1 - low ; 2 - medium ; 3 - high ; 4 - urgent
 
-export const create = async () => {
-    
-}
+import mongoose from "mongoose"
+
+const TicketSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    type: String,
+    group: String,
+    place: String,
+    priority: String,
+    source: String,
+    status: String,
+    dateOpened: Date,
+    reporterId: String,
+    agentId: String
+})
+
+
+export default mongoose.models.Ticket || mongoose.model('Ticket', TicketSchema)
