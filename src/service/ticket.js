@@ -1,7 +1,6 @@
 import databaseConnection from '../utils/database'
 import openai from '../utils/openai'
 import Ticket from '../model/ticket'
-const dsclient = require('../bot')
 
 
 export const openTicket = async (ticket) => {
