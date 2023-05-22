@@ -12,7 +12,7 @@ export const openTicket = async (ticket) => {
 export const openTicketAuto = async (description, source, reporterId) => {
     let ticket = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: [{role: "user", content: `Interprete o chamado aberto a seguir e retorne apenas o title, 
+        messages: [{role: "user", content: `Interprete o chamado aberto a seguir e retorne apenas o title(resumindo o chamado em no máximo 100 caracteres), 
         o type (problema, dúvida ou solicitação), o group (suporte técnico, 
             sistemas internos, auditoria, comercial ou jurídico), o place e a priority 
             (baixa, média, alta ou urgente) no formato JSON
@@ -29,5 +29,5 @@ export const openTicketAuto = async (description, source, reporterId) => {
 
     await databaseConnection()
     const createdTicket = await Ticket.create(ticket)
-    return createdTicket._id
+    return createdTicket
 }
