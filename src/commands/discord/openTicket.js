@@ -43,7 +43,16 @@ module.exports = {
         }).then( channel => {
             const embed = new EmbedBuilder()
             .setColor(0x2BB673)
+            .setAuthor({name: 'Justinho', iconURL: 'https://styles.redditmedia.com/t5_3b1wr/styles/communityIcon_qdbg6bz0bud71.png?width=256&s=ccf3d06bf3b8056f312f207c7ce906cf69af6efd', url: 'http://portal.tributojusto.com.br'})
             .setTitle(ticket.title)
+            .setDescription(ticket.description)
+            .addFields(
+                { name: 'Tipo', value: ticket.type},
+                { name: '' }
+            )
+            .setTimestamp()
+            .setFooter({text: interaction.member.name, iconURL: 'https://styles.redditmedia.com/t5_3b1wr/styles/communityIcon_qdbg6bz0bud71.png?width=256&s=ccf3d06bf3b8056f312f207c7ce906cf69af6efd'})
+
         })
 
         interaction.reply(`Chamado recebido!`)
