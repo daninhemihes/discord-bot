@@ -16,48 +16,50 @@ module.exports = {
         }
     ],
     callback: async (client, interaction) => {
+      interaction.reply(`Sua solicitação foi recebida! Você pode visualizá-la na categoria 'Tickets', neste mesmo servidor.`)
         const message = interaction.options.getString('descricao')
-        const ticket = await ticketService.openTicketAuto(message, 'discord', interaction.member.name)
-        console.log(ticket)
-        console.log('Chamado v ^ canal')
-        const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == ticketCategoryId) //verify if x.id is correct
-        
+        const ticket = await ticketService.openTicketAuto(message, 'discord', interaction.member.id)
+        const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == ticketCategoryId)
+        const ticketAgent = await interaction.guild.members.cache.find(members => members.id == ticket.agentId)
+        const ticketOpenedMsg = await ticketService.openTicketMessageAuto(ticket.description)
+        console.log(ticketOpenedMsg)
         await ticketCategory.children.create({
             type: ChannelType.GuildText,
             name: `${ticket.title}`,
             permissionOverwrites: [
                 {
-                  id: interaction.guild.id,
-                  deny: ['VIEW_CHANNEL'],
+                  id: interaction.guildId,
+                  deny: ['ViewChannel'],
         
                 },
                 {
-                  id: interaction.author.id,
-                  allow: ['VIEW_CHANNEL'],
+                  id: interaction.user.id,
+                  allow: ['ViewChannel'],
                 },
                 {
                   id: botId,
-                  allow: ['VIEW_CHANNEL'],
+                  allow: ['ViewChannel'],
                 },
               ],
-        }).then( channel => {
+        })
+        .then( channel => {
             const embed = new EmbedBuilder()
             .setColor(0x2BB673)
-            .setAuthor({name: 'Justinho', iconURL: 'https://styles.redditmedia.com/t5_3b1wr/styles/communityIcon_qdbg6bz0bud71.png?width=256&s=ccf3d06bf3b8056f312f207c7ce906cf69af6efd', url: 'http://portal.tributojusto.com.br'})
+            .setAuthor({name: interaction.user.username})
             .setTitle(ticket.title)
             .setDescription(ticket.description)
             .addFields(
-                { name: 'Tipo', value: ticket.type},
-                { name: '' }
+                { name: '\u200B', value: '\u200B' },
+                { name: 'Type', value: ticket.type, inline: true},
+                { name: 'Grupo', value: ticket.group, inline: true},
+                { name: 'Local', value: ticket.place, inline: true},
+                { name: 'Prioridade', value: ticket.priority, inline: true},
+                { name: 'Status', value: ticket.type, inline: true},
+                { name: 'Agente', value: ticketAgent.user.username, inline: true},
             )
             .setTimestamp()
-            .setFooter({text: interaction.member.name, iconURL: 'https://styles.redditmedia.com/t5_3b1wr/styles/communityIcon_qdbg6bz0bud71.png?width=256&s=ccf3d06bf3b8056f312f207c7ce906cf69af6efd'})
-
+            channel.send({ embeds: [embed] });
+            channel.send({ content: `ticketOpenedMsg`})
         })
-
-        interaction.reply(`Chamado recebido!`)
-
-        //const ticketCategory = client.guild.channels.cache.get
-        //ticketCategoryId
     }
 }
