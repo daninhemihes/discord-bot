@@ -2,5 +2,32 @@
     "guildId": "1107747698657992704",
     "botId": "1108731552373944381",
     "ticketCategoryId": "1108117572941009017",
-    "devs": ["1049776007403536464", "1071104838827507733"]
+    "devs": ["1049776007403536464", "1071104838827507733"],
+    "ticket": {
+        "type": [
+            "Problema",
+            "Dúvida",
+            "Solicitação"
+        ]
+        ,
+        "group": [
+            "Suporte Técnico",
+            "Sistemas TI",
+            "SAC Atendimento"
+        ],
+        "priority": [
+            "Mínima",
+            "Baixa",
+            "Média",
+            "Alta",
+            "Crítica"
+        ],
+        "status": [
+            "Aguardando",
+            "Em Progresso",
+            "Impedido",
+            "Validação",
+            "Concluído"
+        ]
+    }
 }

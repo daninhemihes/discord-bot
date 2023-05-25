@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import ticketController from './controller/ticket'
 import Discord from 'discord.js'
 import discordEventHandler from './handlers/discordEventHandler'
+import databaseConnection from './utils/database'
 require('dotenv').config()
 
 //Initialize express.js API
@@ -19,3 +20,6 @@ app.listen(port, () => {
 const client = new Discord.Client({intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent",]});
 discordEventHandler(client);
 client.login(process.env.DISCORD_TOKEN)
+
+//Initialize Database Connection
+databaseConnection()
