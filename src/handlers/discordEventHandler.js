@@ -9,13 +9,16 @@ module.exports = (client) => {
     })
 
     client.on('interactionCreate', async (interaction) => {
-        if (!interaction.isChatInputCommand()) return
-        
         try {
-            const localCommands = await getLocalCommands()
+            let commandName
+            if(interaction.isChatInputCommand()) commandName = interaction.commandName
+            else if (interaction.isButton()) commandName = interaction.customId
+            else return
 
+            
             //Validations
-            const commandObject = await localCommands.find( (cmd) => cmd.name === interaction.commandName)
+            const localCommands = await getLocalCommands()
+            const commandObject = await localCommands.find( (cmd) => cmd.name === commandName)
             if (!commandObject) return
             if (commandObject.devOnly){
                 if (!devs.includes(interaction.member.id)){
@@ -32,6 +35,5 @@ module.exports = (client) => {
         } catch (error) {
             console.log(`There wan an error running this command: ${error}`)
         }
-
     })
 }

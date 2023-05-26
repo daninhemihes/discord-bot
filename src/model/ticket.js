@@ -57,7 +57,8 @@ const TicketSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    agentId: String
+    agentId: String,
+    channelId: String,
 })
 
 const TicketHistorySchema = new mongoose.Schema({
@@ -90,7 +91,6 @@ TicketSchema.methods.map = function(field) {
             value = ticket.status[this.status-1]
             break
     }
-    console.log(field + ' ' + value)
     return value
 }
 /*-------------------- END: METHODS --------------------*/
@@ -110,9 +110,7 @@ TicketSchema.pre('save', async function (next){
     
         generatedId = parseInt(highestNumberUsed[0].id + 1)
     }
-    console.log(generatedId)
     this.id = generatedId;
-    console.log(this.id)
     next();
 })
 

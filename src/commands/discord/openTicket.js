@@ -3,7 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Application
 import * as ticketService from '../../service/ticket'
 
 module.exports = {
-    name: 'chamado',
+    name: 'abrirchamado',
     description: 'Forneça o máximo de detalhes para a IA abrir o seu ticket, incluindo o seu setor e localização.',
     // devOnly: Boolean,
     // deleted: Boolean,
@@ -16,11 +16,10 @@ module.exports = {
         }
     ],
     callback: async (client, interaction) => {
-
       // Open Ticket Auto and Validate Ticket Information
       const message = interaction.options.getString('descricao')
       const ticket = await ticketService.openTicketAuto(message, 'discord', interaction.member.id)
-      
+
       if (ticket.error) return interaction.reply(
         `:x: Para melhor atendê-lo, por favor, abra um novo chamado fornecendo mais detalhes, como seu setor e localização. Obrigado!`
       )
@@ -32,7 +31,7 @@ module.exports = {
       await ticketCategory.children.create({
           type: ChannelType.GuildText,
           name: `${ticket.title}`,
-          position: 7,
+          position: 0,
           permissionOverwrites: [
               {
                 id: interaction.guildId,
@@ -50,7 +49,7 @@ module.exports = {
             ],
         })
         .then( channel => {
-          
+          ticketService.setTicketChannel(ticket.id, channel.id)
           // Create Ticket Embed Message
           const embed = new EmbedBuilder()
           .setColor(0x2BB673)
@@ -70,7 +69,7 @@ module.exports = {
 
           // Create Button for Close Ticket
           const closeBtn = new ButtonBuilder()
-          .setCustomId('closeTicketBtn')
+          .setCustomId('fecharchamado')
           .setLabel('Fechar Chamado')
           .setStyle(ButtonStyle.Primary);
           const actionRow = new ActionRowBuilder()
