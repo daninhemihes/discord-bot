@@ -28,6 +28,7 @@ export const openTicketAuto = async (description, source, reporterId) => {
         Se não for possível preencher o campo place, retorne ele como uma string 'Tributo Justo'.
         Chamado: ${description}`}],
     }).then( resp => {
+        console.log(resp)
         const gptResponse = JSON.parse(resp.data.choices[0].message.content)
         ticket.title = gptResponse.title
         ticket.type = gptResponse.type
@@ -91,5 +92,16 @@ export const closeTicket = async (ticket) => {
         }
     } catch (error){
         console.log(error)
+    }
+}
+
+export const recordDiscordMessage = async (channelId, messageData) => {
+    try{
+        console.log(messageData)
+        const res = await Ticket.updateOne({ channelId: channelId }, { $push: { messages: messageData } })
+        console.log(res)
+        return res.acknowledged
+    } catch (error){
+        console.log('Error while trying to record Discord message: ' + error)
     }
 }

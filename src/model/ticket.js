@@ -59,6 +59,13 @@ const TicketSchema = new mongoose.Schema({
     },
     agentId: String,
     channelId: String,
+    messages: [{ 
+        authorId: String, 
+        message: String, 
+        dateSent: {
+            type: Date,
+            default: () => Date.now()
+        } }]
 })
 
 const TicketHistorySchema = new mongoose.Schema({

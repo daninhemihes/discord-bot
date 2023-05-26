@@ -1,4 +1,5 @@
-import { devs, guildId } from '../../config.json'
+import { devs, guildId, channels } from '../../config.json'
+import * as ticketService from '../service/ticket'
 import registerCommands from '../utils/registerCommands'
 import getLocalCommands from '../utils/getLocalCommands'
 
@@ -8,17 +9,29 @@ module.exports = (client) => {
         console.log("Discord bot ready!")
     })
 
+    client.on('messageCreate', (message) => {
+        if(message.channel.parentId == channels.ticketsCategory && message.channelId != channels.openTicket){
+            const messageData = {
+                authorId: message.author.id,
+                message: message.content
+            }
+            ticketService.recordDiscordMessage(client, messageData)
+        }
+    })
+
     client.on('interactionCreate', async (interaction) => {
         try {
-            let commandName
-            if(interaction.isChatInputCommand()) commandName = interaction.commandName
-            else if (interaction.isButton()) commandName = interaction.customId
-            else return
-
+            if(!interaction.isChatInputCommand() && !interaction.isButton()) return
             
             //Validations
             const localCommands = await getLocalCommands()
-            const commandObject = await localCommands.find( (cmd) => cmd.name === commandName)
+            const commandObject = await localCommands.find( (cmd) => {
+                if(interaction.isChatInputCommand()){
+                    return cmd.name === interaction.commandName
+                } else if (interaction.isButton()){
+                    return cmd.name === interaction.customId
+                }
+            })
             if (!commandObject) return
             if (commandObject.devOnly){
                 if (!devs.includes(interaction.member.id)){
