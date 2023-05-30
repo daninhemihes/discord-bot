@@ -17,14 +17,15 @@ module.exports = {
     ],
     callback: async (client, interaction) => {
       // Open Ticket Auto and Validate Ticket Information
+      await interaction.deferReply()
       const message = interaction.options.getString('descricao')
       const ticket = await ticketService.openTicketAuto(message, 'discord', interaction.member.id)
 
-      if (ticket.error) return interaction.reply(
+      if (ticket.error) return interaction.editReply(
         `:x: Para melhor atendê-lo, por favor, abra um novo chamado fornecendo mais detalhes, como seu setor e localização. Obrigado!`
       )
       // Create Ticket channel
-      interaction.reply(`:white_check_mark: Seu chamado está sendo processado! Em alguns segundos, ele estará disponível na categoria "Tickets" neste mesmo servidor.`)
+      interaction.editReply(`:white_check_mark: Seu chamado está sendo processado! Em alguns segundos, ele estará disponível na categoria "Tickets" neste mesmo servidor.`)
       const ticketAgent = await interaction.guild.members.cache.find(members => members.id == ticket.agentId)
       const ticketOpenedMsg = await ticketService.openTicketMessageAuto(ticket.description)
       const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == ticketCategoryId)
