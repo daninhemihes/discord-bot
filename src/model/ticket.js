@@ -1,4 +1,4 @@
-import { ticket } from './../../config.json'
+import { ticket, botId } from './../../config.json'
 import mongoose from "mongoose"
 import * as helper from '../utils/helper'
 
@@ -53,19 +53,21 @@ const TicketSchema = new mongoose.Schema({
         default: () => Date.now(),
         immutable: true
     },
-    reporterId: {
-        type: String,
-        required: true
+    reporter: {
+        discordId: String,
+        name: String
     },
-    agentId: String,
-    channelId: String,
-    messages: [{ 
-        authorId: String, 
-        message: String, 
-        dateSent: {
-            type: Date,
-            default: () => Date.now()
-        } }]
+    agent: {
+        discordId: {
+            type: String,
+            default: botId
+        },
+        name: {
+            type: String,
+            default: 'Justinho'
+        },
+    },
+    channelId: String
 })
 
 const TicketHistorySchema = new mongoose.Schema({

@@ -4,6 +4,7 @@ import ticketController from './controller/ticket'
 import Discord from 'discord.js'
 import discordEventHandler from './handlers/discordEventHandler'
 import databaseConnection from './utils/database'
+import helper from './utils/helper'
 require('dotenv').config()
 
 //Initialize express.js API

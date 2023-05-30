@@ -9,3 +9,11 @@ export const getCurrentNumericDateTime = async () => {
     
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
 }
+
+export const sleep = async (ms) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+}
+
+global.helper = { getCurrentNumericDateTime, sleep }

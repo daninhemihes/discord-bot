@@ -26,7 +26,7 @@ module.exports = {
       )
       // Create Ticket channel
       interaction.editReply(`:white_check_mark: Seu chamado está sendo processado! Em alguns segundos, ele estará disponível na categoria "Tickets" neste mesmo servidor.`)
-      const ticketAgent = await interaction.guild.members.cache.find(members => members.id == ticket.agentId)
+      const ticketAgent = await interaction.guild.members.cache.find(members => members.id == ticket.agent.discordId)
       const ticketOpenedMsg = await ticketService.openTicketMessageAuto(ticket.description)
       const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == ticketCategoryId)
       await ticketCategory.children.create({
@@ -49,7 +49,8 @@ module.exports = {
               },
             ],
         })
-        .then( channel => {
+        .then( async channel => {
+          console.log('Achived here')
           ticketService.setTicketChannel(ticket.id, channel.id)
           // Create Ticket Embed Message
           const embed = new EmbedBuilder()
@@ -78,6 +79,7 @@ module.exports = {
 
           // Send Embed and Opened Messages to Ticket Channel
           channel.send({ embeds: [embed], components: [actionRow] });
+          await helper.sleep(1000)
           channel.send({ content: `<@${interaction.user}> ${ticketOpenedMsg}`})
         })
     }

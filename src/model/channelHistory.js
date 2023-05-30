@@ -6,7 +6,6 @@ import * as helper from '../utils/helper'
 const ChannelHistorySchema = new mongoose.Schema({
     ticketId: {
         type: String,
-        unique: true
     },
     channelId: {
         type: String,
