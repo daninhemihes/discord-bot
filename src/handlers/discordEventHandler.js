@@ -1,5 +1,6 @@
 import { devs, guildId, channels } from '../../config.json'
 import * as ticketService from '../service/ticket'
+import * as channelService from '../service/channel'
 import registerCommands from '../utils/registerCommands'
 import getLocalCommands from '../utils/getLocalCommands'
 
@@ -11,11 +12,7 @@ module.exports = (client) => {
 
     client.on('messageCreate', (message) => {
         if(message.channel.parentId == channels.ticketsCategory && message.channelId != channels.openTicket){
-            const messageData = {
-                authorId: message.author.id,
-                message: message.content
-            }
-            ticketService.recordDiscordMessage(client, messageData)
+            channelService.recordMessage(client, message)
         }
     })
 
