@@ -1,6 +1,5 @@
 import { ticket, botId } from './../../config.json'
 import mongoose from "mongoose"
-import * as helper from '../utils/helper'
 
 /*-------------------- START: SCHEMA --------------------*/
 const TicketSchema = new mongoose.Schema({
@@ -72,7 +71,8 @@ const TicketSchema = new mongoose.Schema({
         name: String
     }],
     channelId: String
-})
+});
+
 
 const TicketHistorySchema = new mongoose.Schema({
     ticketId: {
@@ -110,21 +110,18 @@ TicketSchema.methods.map = function(field) {
 
 /*-------------------- START: MIDDLEWARE --------------------*/
 TicketSchema.pre('save', async function (next){
-    const currentDateTime = (await helper.getCurrentNumericDateTime()).toString()
-    let sufix = '001';
-    let generatedId = `${currentDateTime}${sufix}`
-
-    const existingDoc = await this.constructor.findOne({ id: generatedId })
-    if (existingDoc) {
-        const highestNumberUsed = await this.constructor
-          .find({ id: { $regex: `'^${currentDateTime}'` } })
-          .sort({ id: -1 })
-          .limit(1);
-    
-        generatedId = parseInt(highestNumberUsed[0].id + 1)
+    if (this.isNew) {
+        try {
+            const lastTicket = await this.constructor.findOne({}, {}, { sort: { id: -1 } });
+            const lastId = lastTicket ? lastTicket.id : 0;
+            this.id = lastId + 1;
+            next();
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        next();
     }
-    this.id = generatedId;
-    next();
 })
 
 TicketSchema.post('updateOne', async function(doc) {
