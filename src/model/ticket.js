@@ -67,6 +67,10 @@ const TicketSchema = new mongoose.Schema({
             default: 'Justinho'
         },
     },
+    share: [{
+        discordId: String,
+        name: String
+    }],
     channelId: String
 })
 

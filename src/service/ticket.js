@@ -1,7 +1,26 @@
+import { botId } from '../../config.json'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js"
 import openai from '../utils/openai'
 import Ticket from '../model/ticket'
-import User from '../model/user'
-import { botId } from '../../config.json'
+import TicketMessage from '../model/channelHistory'
+
+export const getTicketById = async (id) => {
+    try{
+        const res = await Ticket.findOne({ id: id }).exec()
+        return res
+    } catch (error) {
+        console.log(`Error while trying to get ticket by id: ${error}`)
+    }
+}
+
+export const getTicketByChannel = async (channelId) => {
+    try{
+        const res = await Ticket.findOne({ channelId: channelId }).exec()
+        return res
+    } catch (error) {
+        console.log(`Error while trying to get ticket by channelId: ${error}`)
+    }
+}
 
 export const openTicket = async (ticket) => {
     const createdTicket = await Ticket.create(ticket)
@@ -15,7 +34,10 @@ export const openTicketAuto = async (description, source, reporterId) => {
         status: 1,
         dateOpened: new Date(),
         reporterId: reporterId,
-        agentId: botId,
+        agent: {
+            discordId: botId,
+            name: 'Justinho',
+        },
     })
 
     await openai.createChatCompletion({
@@ -28,7 +50,6 @@ export const openTicketAuto = async (description, source, reporterId) => {
         Se não for possível preencher o campo place, retorne ele como uma string 'Tributo Justo'.
         Chamado: ${description}`}],
     }).then( resp => {
-        console.log(resp)
         const gptResponse = JSON.parse(resp.data.choices[0].message.content)
         ticket.title = gptResponse.title
         ticket.type = gptResponse.type
@@ -97,11 +118,53 @@ export const closeTicket = async (ticket) => {
 
 export const recordDiscordMessage = async (channelId, messageData) => {
     try{
-        console.log(messageData)
-        const res = await Ticket.updateOne({ channelId: channelId }, { $push: { messages: messageData } })
+        const ticket = await Ticket.findOne({ channelId: channelId })
+        const res = await TicketMessage.create({id: ticket.id, status: ticket.status, authorId: messageData.authorId, message: messageData.message})
         console.log(res)
         return res.acknowledged
     } catch (error){
         console.log('Error while trying to record Discord message: ' + error)
     }
+}
+
+export const transferTicket = async (ticketId, agent) => {
+    try{
+        const res = await Ticket.updateOne({ id: ticketId }, { agent: agent })
+        return res.acknowledged
+    } catch (error) {
+        console.log(`Error while trying to transfer ticket: ${error}`)
+    }
+}
+
+export const buildStatusEmbed = async (ticket) => {
+    const embed = new EmbedBuilder()
+    .setColor(0x2BB673)
+    .setAuthor({name: interaction.user.username})
+    .setTitle(ticket.title)
+    .setDescription(ticket.description)
+    .addFields(
+        { name: '\u200B', value: '\u200B' },
+        { name: 'Tipo', value: ticket.map('type'), inline: true},
+        { name: 'Grupo', value: ticket.map('group'), inline: true},
+        { name: 'Local', value: ticket.place, inline: true},
+        { name: 'Prioridade', value: ticket.map('priority'), inline: true},
+        { name: 'Status', value: ticket.map('status'), inline: true},
+        { name: 'Agente', value: ticket.agent.name, inline: true},
+    )
+    .setTimestamp();
+
+    // Create Button for Close Ticket
+    const closeBtn = new ButtonBuilder()
+    .setCustomId('fecharchamado')
+    .setLabel('Fechar Chamado')
+    .setStyle(ButtonStyle.Primary);
+    const actionRow = new ActionRowBuilder()
+    .addComponents(closeBtn);
+
+    const message = {
+        embeds: [embed],
+        components: [actionRow]
+    }
+
+    return message
 }
