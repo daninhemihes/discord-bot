@@ -42,7 +42,7 @@ module.exports = {
             //#region Verify if ticket status is waiting
             const ticketObj = await ticketService.getTicketById(params.ticketid)
             if(ticketObj.status != 1) {
-                interaction.editReply(`Ticket ${params.ticketid} transferido!`)
+                interaction.editReply(`🔄 Ticket ${params.ticketid} transferido por <@${interaction.user.id}>!`)
                 return
             }
             //#endregion
@@ -62,7 +62,7 @@ module.exports = {
             await interaction.message.delete()
             //#endregion
 
-            interaction.editReply(`Ticket ${params.ticketid} transferido!`)
+            interaction.editReply(`🔄 Ticket ${params.ticketid} transferido por <@${interaction.user.id}>!`)
             
         } catch (error) {
             console.log(error)

@@ -7,6 +7,13 @@
         "ticketsCategory": "1108117572941009017",
         "openTicket": "1108117606239588484"
     },
+    "priorityColors":[
+        {"emoji":"🔵", "color":"0x1e47e8"},
+        {"emoji":"🟢", "color":"0x39e81e"},
+        {"emoji":"🟡", "color":"0xe8e81e"},
+        {"emoji":"🟠", "color":"0xe8861e"},
+        {"emoji":"🔴", "color":"0xe81e1e"}
+    ],
     "ticket": {
         "type": [
             "Problema",
@@ -40,7 +47,7 @@
         ],
         "status": [
             "Aguardando",
-            "Em Progresso",
+            "Em Atendimento",
             "Impedido",
             "Validação",
             "Concluído"

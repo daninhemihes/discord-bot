@@ -1,4 +1,4 @@
-import { ticketCategoryId, botId } from '../../../config.json'
+import { ticketCategoryId, botId, priorityColors} from '../../../config.json'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType, ChannelType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
@@ -33,7 +33,7 @@ module.exports = {
   
         const channel = await ticketCategory.children.create({
           type: ChannelType.GuildText,
-          name: `ticket-${ticket.id}`,
+          name: `${priorityColors[ticket.priority-1].emoji}ticket-${ticket.id}`,
           position: 0,
           permissionOverwrites: [
               {
@@ -64,7 +64,7 @@ module.exports = {
         //#endregion
 
         //#region Ticket Alert for Group Channel (agents)
-        const attendBtn = ticketService.buildAttendTicketBtn()
+        const attendBtn = ticketService.buildAttendTicketBtn(ticket.id)
         const transferBtns = ticketService.buildTransferBtns(ticket.group, ticket.id)
         const actionRowAttend = new ActionRowBuilder()
         .addComponents(attendBtn)

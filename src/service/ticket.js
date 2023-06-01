@@ -1,4 +1,4 @@
-import { botId, ticket as configTicket } from '../../config.json'
+import { botId, ticket as configTicket, priorityColors } from '../../config.json'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js"
 import openai from '../utils/openai'
 import Ticket from '../model/ticket'
@@ -113,6 +113,43 @@ export const setTicketGroup = async (id, newGroup) => {
     }
 }
 
+export const setTicketStatus = async (id, newStatus) => {
+    try{
+        const res = await Ticket.updateOne({id: id}, {status: newStatus})
+        return res.acknowledged
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const setTicketAgent = async (id, newAgent) => {
+    try{
+        const res = await Ticket.updateOne({id: id}, {agent: {discordId: newAgent.id, name: newAgent.username}})
+        return res.acknowledged
+    } catch (error) {
+
+    }
+}
+
+export const shareTicket = async (id, user) => {
+    try{
+        await Ticket.updateOne(
+            { id: id }, { $push: {messages: {
+                id: message.id,
+                author: {
+                    id: message.author.id,
+                    username: message.author.username,
+                    discriminator: message.author.discriminator
+                },
+                createdTimestamp: message.createdTimestamp,
+                content: message.content
+            } } }
+        )
+    } catch (error) {
+
+    }
+}
+
 export const closeTicket = async (ticket) => {
     try{
         if(ticket.id){
@@ -150,7 +187,7 @@ export const transferTicket = async (ticketId, agent) => {
 
 export const buildTicketEmbed = (ticket) => {
     const embed = new EmbedBuilder()
-    .setColor(0x2BB673)
+    .setColor(priorityColors[ticket.priority-1].color)
     .setAuthor({name: ticket.reporter.name})
     .setTitle(ticket.title)
     .setDescription(ticket.description)
@@ -174,9 +211,9 @@ export const buildCloseTicketBtn = () => {
     .setStyle(ButtonStyle.Primary);
     return button
 }
-export const buildAttendTicketBtn = () => {
+export const buildAttendTicketBtn = (ticketId) => {
     const button = new ButtonBuilder()
-    .setCustomId('atenderchamado')
+    .setCustomId(`atenderchamado?ticketid=${ticketId}`)
     .setLabel('Atender Chamado')
     .setStyle(ButtonStyle.Primary);
     return button
