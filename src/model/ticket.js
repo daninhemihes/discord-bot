@@ -23,8 +23,6 @@ const TicketSchema = new mongoose.Schema({
     },
     group: {
         type: Number,
-        minLength: 1,
-        maxLength: 3,
         required: true
     },
     place: {
@@ -95,7 +93,7 @@ TicketSchema.methods.map = function(field) {
             value = ticket.type[this.type-1]
             break
         case 'group': 
-            value = ticket.group[this.group-1]
+            value = ticket.group[this.group-1].name
             break
         case 'priority': 
             value = ticket.priority[this.priority-1]
@@ -105,6 +103,9 @@ TicketSchema.methods.map = function(field) {
             break
     }
     return value
+}
+TicketSchema.methods.groupChannel = function() {
+    return ticket.group[this.group-1].channelId
 }
 /*-------------------- END: METHODS --------------------*/
 

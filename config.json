@@ -15,9 +15,21 @@
         ]
         ,
         "group": [
-            "Suporte Técnico",
-            "Sistemas TI",
-            "SAC Atendimento"
+            {
+                "name": "Suporte Técnico",
+                "channelId": "1113472319332036668",
+                "id": 1
+            },
+            {
+                "name": "Sistemas TI",
+                "channelId": "1113472373161738293",
+                "id": 2
+            },
+            {
+                "name": "SAC",
+                "channelId": "1113472271961563247",
+                "id": 3
+            }
         ],
         "priority": [
             "Mínima",

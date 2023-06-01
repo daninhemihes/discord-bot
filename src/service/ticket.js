@@ -1,4 +1,4 @@
-import { botId } from '../../config.json'
+import { botId, ticket as configTicket } from '../../config.json'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js"
 import openai from '../utils/openai'
 import Ticket from '../model/ticket'
@@ -27,13 +27,16 @@ export const openTicket = async (ticket) => {
     return createdTicket._id
 }
 
-export const openTicketAuto = async (description, source, reporterId) => {
+export const openTicketAuto = async (description, source, reporter) => {
     let ticket = new Ticket({
         description: description,
         source: source,
         status: 1,
         dateOpened: new Date(),
-        reporterId: reporterId,
+        reporter: {
+          discordId: reporter.user.id,
+          name: reporter.user.username,  
+        },
         agent: {
             discordId: botId,
             name: 'Justinho',
@@ -101,6 +104,15 @@ export const setTicketChannel = async (id, channelId) => {
     }
 }
 
+export const setTicketGroup = async (id, newGroup) => {
+    try{
+        const res = await Ticket.updateOne({ id: id }, { group: newGroup })
+        return res.acknowledged
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const closeTicket = async (ticket) => {
     try{
         if(ticket.id){
@@ -136,10 +148,10 @@ export const transferTicket = async (ticketId, agent) => {
     }
 }
 
-export const buildStatusEmbed = async (ticket) => {
+export const buildTicketEmbed = (ticket) => {
     const embed = new EmbedBuilder()
     .setColor(0x2BB673)
-    .setAuthor({name: interaction.user.username})
+    .setAuthor({name: ticket.reporter.name})
     .setTitle(ticket.title)
     .setDescription(ticket.description)
     .addFields(
@@ -149,22 +161,36 @@ export const buildStatusEmbed = async (ticket) => {
         { name: 'Local', value: ticket.place, inline: true},
         { name: 'Prioridade', value: ticket.map('priority'), inline: true},
         { name: 'Status', value: ticket.map('status'), inline: true},
-        { name: 'Agente', value: ticket.agent.name, inline: true},
-    )
-    .setTimestamp();
+        { name: 'Agente', value: `<@${ticket.agent.discordId}>`, inline: true},
+        )
+    .setFooter({text: `Ticket ${ticket.id}`});
+    return embed
+}
 
-    // Create Button for Close Ticket
-    const closeBtn = new ButtonBuilder()
+export const buildCloseTicketBtn = () => {
+    const button = new ButtonBuilder()
     .setCustomId('fecharchamado')
     .setLabel('Fechar Chamado')
     .setStyle(ButtonStyle.Primary);
-    const actionRow = new ActionRowBuilder()
-    .addComponents(closeBtn);
+    return button
+}
+export const buildAttendTicketBtn = () => {
+    const button = new ButtonBuilder()
+    .setCustomId('atenderchamado')
+    .setLabel('Atender Chamado')
+    .setStyle(ButtonStyle.Primary);
+    return button
+}
 
-    const message = {
-        embeds: [embed],
-        components: [actionRow]
-    }
-
-    return message
+export const buildTransferBtns = (originGroup, ticketId) => {
+    let buttons = [];
+    configTicket.group.forEach(group => {
+        const button = new ButtonBuilder()
+        .setCustomId(`alterargrupochamado?group=${group.id}&ticketid=${ticketId}`)
+        .setLabel(`Transferir ${group.name}`)
+        .setStyle(ButtonStyle.Secondary);
+        buttons.push(button)
+    });
+    if (originGroup) buttons.splice((originGroup - 1), 1)
+    return buttons
 }

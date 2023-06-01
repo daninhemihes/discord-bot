@@ -19,13 +19,21 @@ module.exports = (client) => {
     client.on('interactionCreate', async (interaction) => {
         try {
             if(!interaction.isChatInputCommand() && !interaction.isButton()) return
-            
-            //Validations
             const localCommands = await getLocalCommands()
             const commandObject = await localCommands.find( (cmd) => {
                 if(interaction.isChatInputCommand()){
                     return cmd.name === interaction.commandName
                 } else if (interaction.isButton()){
+                    if( interaction.customId.includes("?")){
+                        interaction.params = {}
+                        const customId = interaction.customId.split("?")
+                        interaction.customId = customId[0]
+                        const customIdParams = customId[1].split("&")
+                        customIdParams.forEach(element => {
+                            const param = element.split('=')
+                            interaction.params[param[0]] = param[1]
+                        });
+                    }
                     return cmd.name === interaction.customId
                 }
             })
