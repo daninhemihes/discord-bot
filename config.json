@@ -8,11 +8,11 @@
         "openTicket": "1108117606239588484"
     },
     "priorityColors":[
-        {"emoji":"🔵", "color":"0x1e47e8"},
-        {"emoji":"🟢", "color":"0x39e81e"},
-        {"emoji":"🟡", "color":"0xe8e81e"},
-        {"emoji":"🟠", "color":"0xe8861e"},
-        {"emoji":"🔴", "color":"0xe81e1e"}
+        {"emoji":"🔵", "color":[30, 71, 232]},
+        {"emoji":"🟢", "color":[57, 232, 30]},
+        {"emoji":"🟡", "color":[232, 232, 30]},
+        {"emoji":"🟠", "color":[232, 134, 30]},
+        {"emoji":"🔴", "color":[232, 30, 30]}
     ],
     "ticket": {
         "type": [
