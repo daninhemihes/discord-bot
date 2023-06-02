@@ -19,14 +19,21 @@ module.exports = {
                 interaction.editReply(`Para atender um chamado, execute este comando no canal do seu grupo de chamados ou no próprio chamado!`);
                 return
             }
-            
             //#region Set params for interaction
             let ticketid;
             if(interaction.isButton()){
                 ticketid = interaction.params.ticketid;
             } else {
-                ticketid = await await interaction.options.getNumber('ticket');
+                ticketid = await interaction.options.getNumber('ticket');
             }
+            
+            const ticketClosed = await (await ticketService.getTicketById(ticketid)).status === 5
+            if(ticketClosed){
+                await interaction.message.delete()
+                await interaction.editReply(`❌ O chamado ${ticketid} já foi finalizado!`);
+                return
+            }
+
             await ticketService.setTicketStatus(ticketid, 2);
             await ticketService.setTicketAgent(ticketid, interaction.user)
             //#endregion

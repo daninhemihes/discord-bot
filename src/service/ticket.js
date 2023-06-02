@@ -184,7 +184,6 @@ export const recordDiscordMessage = async (channelId, messageData) => {
     try{
         const ticket = await Ticket.findOne({ channelId: channelId })
         const res = await TicketMessage.create({id: ticket.id, status: ticket.status, authorId: messageData.authorId, message: messageData.message})
-        console.log(res)
         return res.acknowledged
     } catch (error){
         console.log('Error while trying to record Discord message: ' + error)
