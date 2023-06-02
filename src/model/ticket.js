@@ -50,6 +50,9 @@ const TicketSchema = new mongoose.Schema({
         default: () => Date.now(),
         immutable: true
     },
+    dateClosed: {
+        type: Date
+    },
     reporter: {
         discordId: String,
         name: String

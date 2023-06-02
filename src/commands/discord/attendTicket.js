@@ -1,12 +1,10 @@
-import { ticket, channels, botId } from '../../../config.json'
-import { ActionRowBuilder, ApplicationCommandOptionType } from "discord.js"
+import { ticket, channels } from '../../../config.json'
+import { ApplicationCommandOptionType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
 module.exports = {
     name: 'atenderchamado',
     description: 'Habilita o atendimento de um chamado para o seu usuário.',
-    // devOnly: Boolean,
-    // deleted: Boolean,
     options: [
         {
             name: 'ticket',

@@ -153,11 +153,26 @@ export const shareTicket = async (id, user) => {
 export const closeTicket = async (ticket) => {
     try{
         if(ticket.id){
-            const res = await Ticket.updateOne({ id: ticket.id }, { status: 5 })
+            const res = await Ticket.updateOne({ id: ticket.id }, { status: 5, dateClosed: Date.now() })
             return res.acknowledged
         }
         else if(ticket.channelId){
-            const res = await Ticket.updateOne({ channelId: ticket.channelId }, { status: 5 })
+            const res = await Ticket.updateOne({ channelId: ticket.channelId }, { status: 5, dateClosed: Date.now() })
+            return res.acknowledged
+        }
+    } catch (error){
+        console.log(error)
+    }
+}
+
+export const reopenTicket = async (ticket) => {
+    try{
+        if(ticket.id){
+            const res = await Ticket.updateOne({ id: ticket.id }, { status: 2, dateClosed: null })
+            return res.acknowledged
+        }
+        else if(ticket.channelId){
+            const res = await Ticket.updateOne({ channelId: ticket.channelId }, { status: 2, dateClosed: null })
             return res.acknowledged
         }
     } catch (error){
@@ -211,6 +226,15 @@ export const buildCloseTicketBtn = () => {
     .setStyle(ButtonStyle.Primary);
     return button
 }
+
+export const buildReopenTicketBtn = () => {
+    const button = new ButtonBuilder()
+    .setCustomId('reabrirchamado')
+    .setLabel('Reabrir Chamado')
+    .setStyle(ButtonStyle.Primary);
+    return button
+}
+
 export const buildAttendTicketBtn = (ticketId) => {
     const button = new ButtonBuilder()
     .setCustomId(`atenderchamado?ticketid=${ticketId}`)
