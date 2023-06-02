@@ -1,0 +1,88 @@
+{
+    "type": [
+        {
+            "id": 1,
+            "name": "Problema"
+        },
+        {
+            "id": 2,
+            "name": "Dúvida"
+        },
+        {
+            "id": 3,
+            "name": "Solicitação"
+        }
+    ]
+    ,
+    "group": [
+        {
+            "id": 1,
+            "name": "Suporte Técnico",
+            "channelId": "1113472319332036668"
+        },
+        {
+            "id": 2,
+            "name": "Sistemas TI",
+            "channelId": "1113472373161738293"
+        },
+        {
+            "id": 3,
+            "name": "SAC",
+            "channelId": "1113472271961563247"
+        }
+    ],
+    "priority": [
+        {
+            "id": 1,
+            "name": "Mínima",
+            "color": [30, 71, 232],
+            "emoji": "🔵"
+        },
+        {
+            "id": 2,
+            "name": "Baixa",
+            "color": [57, 232, 30],
+            "emoji": "🟢"
+        },
+        {
+            "id": 3,
+            "name": "Média",
+            "color": [232, 232, 30],
+            "emoji": "🟡"
+        },
+        {
+            "id": 4,
+            "name": "Alta",
+            "color": [232, 134, 30],
+            "emoji": "🟠"
+        },
+        {
+            "id": 5,
+            "name": "Crítica",
+            "color": [232, 30, 30],
+            "emoji": "🔴"
+        }
+    ],
+    "status": [
+        {
+            "id": 1,
+            "name": "Aguardando"
+        },
+        {
+            "id": 2,
+            "name": "Em Atendimento"
+        },
+        {
+            "id": 3,
+            "name": "Impedido"
+        },
+        {
+            "id": 4,
+            "name": "Validação"
+        },
+        {
+            "id": 5,
+            "name": "Concluído"
+        }
+    ]
+}
