@@ -1,5 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../../.env.${process.env.NODE_ENV}` });
 import mongoose, { mongo } from "mongoose";
-require('dotenv').config()
 
 const databaseConnection = async () => {
     if(!global.mongoose){

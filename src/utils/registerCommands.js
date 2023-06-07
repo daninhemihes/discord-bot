@@ -1,4 +1,5 @@
-import { guildId } from '../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
 import areCommandsDifferent from './areCommandsDifferent'
 import getAppCommands from './getAppCommands'
 import getLocalCommands from './getLocalCommands'
@@ -8,7 +9,7 @@ module.exports = async (client) => {
       const localCommands = getLocalCommands();
       const appCommands = await getAppCommands(
         client,
-        guildId
+        process.env.GUILD_ID
       );
   
       for (const localCommand of localCommands) {

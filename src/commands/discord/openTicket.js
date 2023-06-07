@@ -1,5 +1,7 @@
-import { ticketCategoryId, botId, priorityColors} from '../../../config.json'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType, ChannelType } from "discord.js"
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
+import { priorityColors } from '../../../config.json'
+import { ActionRowBuilder, ApplicationCommandOptionType, ChannelType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
 module.exports = {
@@ -29,7 +31,7 @@ module.exports = {
         interaction.editReply(`:white_check_mark: Seu chamado está sendo processado! Em alguns segundos, ele estará disponível na categoria "Tickets" neste mesmo servidor.`)
         const ticketAgent = await interaction.guild.members.cache.find(members => members.id == ticket.agent.discordId)
         const ticketOpenedMsg = await ticketService.openTicketMessageAuto(ticket.description)
-        const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == ticketCategoryId)
+        const ticketCategory = await interaction.guild.channels.cache.find(categories => categories.id == process.env.TICKETS_CATEGORY_ID)
   
         const channel = await ticketCategory.children.create({
           type: ChannelType.GuildText,
@@ -46,7 +48,7 @@ module.exports = {
                 allow: ['ViewChannel'],
               },
               {
-                id: botId,
+                id: process.env.BOT_ID,
                 allow: ['ViewChannel'],
               },
             ],

@@ -1,5 +1,6 @@
-import { ticket, channels, botId } from '../../../config.json'
-import { ActionRowBuilder, ApplicationCommandOptionType } from "discord.js"
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
+import { ApplicationCommandOptionType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
 module.exports = {
@@ -18,7 +19,7 @@ module.exports = {
     callback: async (client, interaction) => {
         try{
             await interaction.deferReply();
-            if(interaction.channel.parentId != channels.ticketsCategory){
+            if(interaction.channel.parentId != process.env.TICKETS_CATEGORY_ID){
                 interaction.editReply(`Para compartilhar um chamado, execute este comando no canal do chamado que deseja compartilhar!`);
                 return
             }
@@ -36,11 +37,11 @@ module.exports = {
                 interaction.user, 
                 {ViewChannel: true}
             )
-            if(ticket.group.some( item => { return interaction.channel.id == item.channelId })){
+            if([process.env.GROUP_1_CHANNEL, process.env.GROUP_2_CHANNEL, process.env.GROUP_3_CHANNEL].includes(interaction.channel.id)){
                 await interaction.message.delete()
                 interaction.editReply(`✅ Ticket ${ticketid} atendido por <@${interaction.user.id}>!`)
                 ticketChannel.send({ content: `✅ Ticket atendido por <@${interaction.user.id}>!`})
-            } else if (interaction.channel.parentId == channels.ticketsCategory ){
+            } else if (interaction.channel.parentId == process.env.TICKETS_CATEGORY_ID ){
                 interaction.editReply(`✅ Ticket ${ticketid} atendido por <@${interaction.user.id}>!`)
             }    
         } catch (error) {

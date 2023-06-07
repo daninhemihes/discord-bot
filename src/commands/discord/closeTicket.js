@@ -1,4 +1,5 @@
-import { channels } from '../../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
 import { ActionRowBuilder } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
@@ -8,7 +9,7 @@ module.exports = {
     callback: async (client, interaction) => {
         try{
             await interaction.deferReply();
-            if(interaction.channel.parentId != channels.ticketsCategory){
+            if(interaction.channel.parentId != process.env.TICKETS_CATEGORY_ID){
                 interaction.editReply('Para finalizar um chamado, execute este comando no canal do chamado que deseja fechar!')
                 return
             }

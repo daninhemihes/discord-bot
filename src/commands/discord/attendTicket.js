@@ -1,4 +1,5 @@
-import { ticket, channels } from '../../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
 import { ApplicationCommandOptionType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
@@ -15,7 +16,8 @@ module.exports = {
     callback: async (client, interaction) => {
         try{
             await interaction.deferReply();
-            if(interaction.channel.parentId != channels.ticketsCategory && !ticket.group.some( item => { return interaction.channel.id == item.channelId })){
+            if(interaction.channel.parentId != process.env.TICKETS_CATEGORY_ID && 
+                ![process.env.GROUP_1_CHANNEL, process.env.GROUP_2_CHANNEL, process.env.GROUP_3_CHANNEL].includes(interaction.channel.id)){
                 interaction.editReply(`Para atender um chamado, execute este comando no canal do seu grupo de chamados ou no próprio chamado!`);
                 return
             }
@@ -26,7 +28,6 @@ module.exports = {
             } else {
                 ticketid = await interaction.options.getNumber('ticket');
             }
-            
             const ticketClosed = await (await ticketService.getTicketById(ticketid)).status === 5
             if(ticketClosed){
                 await interaction.message.delete()
@@ -44,11 +45,11 @@ module.exports = {
                 interaction.user, 
                 {ViewChannel: true}
             )
-            if(ticket.group.some( item => { return interaction.channel.id == item.channelId })){
+            if([process.env.GROUP_1_CHANNEL, process.env.GROUP_2_CHANNEL, process.env.GROUP_3_CHANNEL].includes(interaction.channel.id)){
                 await interaction.message.delete()
                 interaction.editReply(`✅ Ticket ${ticketid} atendido por <@${interaction.user.id}>!`)
                 ticketChannel.send({ content: `✅ Ticket atendido por <@${interaction.user.id}>!`})
-            } else if (interaction.channel.parentId == channels.ticketsCategory ){
+            } else if (interaction.channel.parentId == process.env.TICKETS_CATEGORY_ID ){
                 interaction.editReply(`✅ Ticket ${ticketid} atendido por <@${interaction.user.id}>!`)
             }    
         } catch (error) {

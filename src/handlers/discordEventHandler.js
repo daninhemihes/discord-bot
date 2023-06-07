@@ -1,4 +1,6 @@
-import { devs, guildId, channels } from '../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
+import { devs } from '../../config.json'
 import * as ticketService from '../service/ticket'
 import * as channelService from '../service/channel'
 import registerCommands from '../utils/registerCommands'
@@ -11,7 +13,7 @@ module.exports = (client) => {
     })
 
     client.on('messageCreate', (message) => {
-        if(message.channel.parentId == channels.ticketsCategory && message.channelId != channels.openTicket){
+        if(message.channel.parentId == process.env.TICKETS_CATEGORY_ID && message.channelId != process.env.OPEN_TICKET_ID){
             channelService.recordMessage(client, message)
         }
     })

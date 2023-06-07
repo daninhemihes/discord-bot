@@ -1,4 +1,3 @@
-import { ticket, channels, botId } from '../../../config.json'
 import { ActionRowBuilder, ApplicationCommandOptionType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
@@ -22,7 +21,8 @@ module.exports = {
     callback: async (client, interaction) => {
         try{
             await interaction.deferReply()
-            if(interaction.channel.parentId != channels.ticketsCategory && !ticket.group.some( item => { return interaction.channel.id == item.channelId })){
+            if(interaction.channel.parentId != process.env.TICKETS_CATEGORY_ID && 
+                ![process.env.GROUP_1_CHANNEL, process.env.GROUP_2_CHANNEL, process.env.GROUP_3_CHANNEL].includes(interaction.channel.id)){
                 interaction.editReply(`Para transferir um chamado, execute este comando no canal do chamado que deseja transferir!`)
                 return
             }
@@ -49,7 +49,7 @@ module.exports = {
 
             //#region Ticket Alert for New Group Channel (agents)
             const embed = ticketService.buildTicketEmbed(ticketObj)
-            const attendBtn = ticketService.buildAttendTicketBtn()
+            const attendBtn = ticketService.buildAttendTicketBtn(ticketObj.id)
             const transferBtns = ticketService.buildTransferBtns(ticketObj.group, ticketObj.id)
             const actionRowAttend = new ActionRowBuilder()
             .addComponents(attendBtn)
@@ -57,7 +57,6 @@ module.exports = {
                 actionRowAttend.addComponents(button)
             })
             const groupChannel = await interaction.guild.channels.fetch(ticketObj.groupChannel())
-            console.log('Pegou channel')
             groupChannel.send({ embeds: [embed], components: [actionRowAttend] })
             await interaction.message.delete()
             //#endregion

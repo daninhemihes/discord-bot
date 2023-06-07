@@ -1,4 +1,3 @@
-import { ticket } from '../../config.json'
 import mongoose from "mongoose"
 import * as helper from '../utils/helper'
 

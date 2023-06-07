@@ -1,4 +1,6 @@
-import { ticket, botId } from './../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../../.env.${process.env.NODE_ENV}` });
+import { ticket } from './../../config.json'
 import mongoose from "mongoose"
 
 /*-------------------- START: SCHEMA --------------------*/
@@ -60,7 +62,7 @@ const TicketSchema = new mongoose.Schema({
     agent: {
         discordId: {
             type: String,
-            default: botId
+            default: process.env.BOT_ID
         },
         name: {
             type: String,
@@ -108,7 +110,14 @@ TicketSchema.methods.map = function(field) {
     return value
 }
 TicketSchema.methods.groupChannel = function() {
-    return ticket.group[this.group-1].channelId
+    switch(this.group){
+        case 1:
+            return process.env.GROUP_1_CHANNEL;
+        case 2:
+            return process.env.GROUP_2_CHANNEL;
+        case 3:
+            return process.env.GROUP_3_CHANNEL;
+    }
 }
 /*-------------------- END: METHODS --------------------*/
 

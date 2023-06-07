@@ -1,12 +1,4 @@
 {
-    "guildId": "1107747698657992704",
-    "botId": "1108731552373944381",
-    "ticketCategoryId": "1108117572941009017",
-    "devs": ["1049776007403536464", "1071104838827507733"],
-    "channels": {
-        "ticketsCategory": "1108117572941009017",
-        "openTicket": "1108117606239588484"
-    },
     "priorityColors":[
         {"emoji":"🔵", "color":[30, 71, 232]},
         {"emoji":"🟢", "color":[57, 232, 30]},
@@ -24,17 +16,14 @@
         "group": [
             {
                 "name": "Suporte Técnico",
-                "channelId": "1113472319332036668",
                 "id": 1
             },
             {
                 "name": "Sistemas TI",
-                "channelId": "1113472373161738293",
                 "id": 2
             },
             {
                 "name": "SAC",
-                "channelId": "1113472271961563247",
                 "id": 3
             }
         ],

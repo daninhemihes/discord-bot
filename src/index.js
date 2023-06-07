@@ -1,3 +1,6 @@
+import path from 'path';
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
 import express from 'express'
 import bodyParser from 'body-parser'
 import ticketController from './controller/ticket'
@@ -5,7 +8,6 @@ import Discord from 'discord.js'
 import discordEventHandler from './handlers/discordEventHandler'
 import databaseConnection from './utils/database'
 import helper from './utils/helper'
-require('dotenv').config()
 
 //Initialize express.js API
 const app = express()

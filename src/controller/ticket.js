@@ -1,6 +1,5 @@
 import { Router } from "express"
 import * as ticketService from '../service/ticket'
-
 const router = Router()
 
 router.post('/open', async (req, res) => {

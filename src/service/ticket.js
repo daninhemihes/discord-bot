@@ -1,5 +1,7 @@
-import { botId, ticket as configTicket, priorityColors } from '../../config.json'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js"
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
+import { ticket as configTicket, priorityColors } from '../../config.json'
+import { ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js"
 import openai from '../utils/openai'
 import Ticket from '../model/ticket'
 import TicketMessage from '../model/channelHistory'
@@ -38,11 +40,10 @@ export const openTicketAuto = async (description, source, reporter) => {
           name: reporter.user.username,  
         },
         agent: {
-            discordId: botId,
+            discordId: process.env.BOT_ID,
             name: 'Justinho',
         },
     })
-
     await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [{role: "user", content: `Interprete o chamado aberto a 
@@ -60,14 +61,12 @@ export const openTicketAuto = async (description, source, reporter) => {
         ticket.place = gptResponse.place
         ticket.priority = gptResponse.priority
     })
-
     for (const prop in ticket){
         if (ticket[prop] === ''){
             ticket.error = '412'
             ticket.description = 'Few details provided to open ticket'
         }
     }
-
     if (ticket.error) return ticket
     await ticket.save()
     return ticket

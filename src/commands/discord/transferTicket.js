@@ -1,4 +1,5 @@
-import { channels, botId } from '../../../config.json'
+import dotenv from "dotenv";
+dotenv.config({ path:__dirname+`../../.env.${process.env.NODE_ENV}` });
 import { ApplicationCommandOptionType } from "discord.js"
 import * as ticketService from '../../service/ticket'
 
@@ -28,7 +29,7 @@ module.exports = {
             }
 
             const channel = await interaction.guild.channels.cache.find(channels => channels.id == ticket.channelId)
-            if(ticket.agent.id != botId){
+            if(ticket.agent.id != process.env.BOT_ID){
                 await channel.permissionOverwrites.edit(
                     oldAgent, 
                     {ViewChannel: false}
